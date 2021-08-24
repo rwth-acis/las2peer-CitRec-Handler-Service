@@ -1,2 +1,2 @@
-rootProject.name = 'las2peer-template-project'
-include('template_project')
+rootProject.name = 'las2peer-CitRec-Handler-Service'
+include('CitRec-Handler-Service')

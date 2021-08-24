@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"i5.las2peer.services.CitrecHandler","c":"CitrecHandlerService","l":"CitrecHandlerService()","url":"%3Cinit%3E()"},{"p":"i5.las2peer.services.CitrecHandler","c":"CitrecHandlerService","l":"more(String)","url":"more(java.lang.String)"},{"p":"i5.las2peer.services.CitrecHandler","c":"CitrecHandlerService","l":"rec(String)","url":"rec(java.lang.String)"}]
