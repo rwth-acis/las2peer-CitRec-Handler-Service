@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -23,6 +27,7 @@ import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -78,7 +83,7 @@ public class CitrecHandlerService extends RESTService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		System.out.println(bodyJson);
+		//System.out.println(bodyJson);
 		String context = bodyJson.getAsString("rec");
 		// get recommendation result from python
 		try {
@@ -87,7 +92,7 @@ public class CitrecHandlerService extends RESTService {
 			String res = null;
 
 			URL url = UriBuilder.fromPath("http://localhost:5000/rec")
-						.path(context)
+						.path(URLEncoder.encode(context, "UTF-8"))
 						.build()
 						.toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -107,12 +112,13 @@ public class CitrecHandlerService extends RESTService {
 		}
 	}
 
+
 	/**
-	 * Function for more papers
+	 * Function for actions
 	 *
 	 */
 	@POST
-	@Path("/more")
+	@Path("/actions")
 	@Produces(MediaType.TEXT_PLAIN)
 	@ApiOperation(
 			value = "REPLACE THIS WITH AN APPROPRIATE FUNCTION NAME",
@@ -121,17 +127,120 @@ public class CitrecHandlerService extends RESTService {
 			value = {@ApiResponse(
 					code = HttpURLConnection.HTTP_OK,
 					message = "REPLACE THIS WITH YOUR OK MESSAGE")})
-	public Response more(String body) {
+	public Response actions(String body) {
 		JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
 		JSONObject bodyJson = null;
 		try {
 			bodyJson = (JSONObject) p.parse(body);
+			// Delete useless key-values
+			bodyJson.remove("intent");
+			bodyJson.remove("entities");
+			bodyJson.remove("botName");
+			bodyJson.remove("contextOn");
+			bodyJson.remove("email");
+			bodyJson.remove("channel");
+			// Extract useful information from the input string
+			if(bodyJson.getAsString("msg").startsWith("[{")){
+				JSONArray jsonArray = (JSONArray) p.parse(bodyJson.getAsString("msg"));
+				Iterator<Object> attributeIterator = jsonArray.iterator();
+				List<String> valueList = new ArrayList<>();
+				while (attributeIterator.hasNext()) {
+					valueList.add(((JSONObject) attributeIterator.next()).getAsString("value"));
+				}
+				bodyJson.put("msg", valueList);
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
+			JSONObject json = null;
+			json.put("text", "An error has occurred.");
+			return Response.ok().entity(json.toString()).build();
 		}
-		System.out.println(bodyJson);
-		bodyJson.put("text", "Button clicked");
-		return Response.ok().entity(bodyJson.toString()).build();
+		try {
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			String res = null;
 
+			URL url = UriBuilder.fromPath("http://localhost:5000/actions")
+					.path(URLEncoder.encode(bodyJson.toString(), "UTF-8"))
+					.build()
+					.toURL();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.connect();
+			BufferedReader rd  = new BufferedReader( new InputStreamReader(connection.getInputStream(), "UTF-8"));
+
+			while ((line = rd.readLine()) != null ) {
+				sb.append(line);
+			}
+			res = sb.toString();
+			return Response.ok().entity(res).build();
+		} catch (IOException e) {
+			e.printStackTrace();
+			JSONObject json = null;
+			json.put("text", "An error has occurred.");
+			return Response.ok().entity(json.toString()).build();
+		}
+	}
+
+
+	/**
+	 * Function for marking list
+	 *
+	 */
+	@POST
+	@Path("/lists")
+	@Produces(MediaType.TEXT_PLAIN)
+	@ApiOperation(
+			value = "REPLACE THIS WITH AN APPROPRIATE FUNCTION NAME",
+			notes = "REPLACE THIS WITH YOUR NOTES TO THE FUNCTION")
+	@ApiResponses(
+			value = {@ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE")})
+	public Response lists(String body) {
+		JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
+		JSONObject bodyJson = null;
+		try {
+			bodyJson = (JSONObject) p.parse(body);
+			// Delete useless key-values
+			bodyJson.remove("intent");
+			bodyJson.remove("entities");
+			bodyJson.remove("botName");
+			bodyJson.remove("contextOn");
+			bodyJson.remove("email");
+			bodyJson.remove("list");
+			bodyJson.remove("channel");
+			bodyJson.remove("time");
+		} catch (ParseException e) {
+			e.printStackTrace();
+			JSONObject json = null;
+			json.put("text", "An error has occurred.");
+			return Response.ok().entity(json.toString()).build();
+		}
+		try {
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			String res = null;
+
+			URL url = UriBuilder.fromPath("http://localhost:5000/lists")
+					.path(URLEncoder.encode(bodyJson.toString(), "UTF-8"))
+					.build()
+					.toURL();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.connect();
+			BufferedReader rd  = new BufferedReader( new InputStreamReader(connection.getInputStream(), "UTF-8"));
+
+			while ((line = rd.readLine()) != null ) {
+				sb.append(line);
+			}
+			res = sb.toString();
+			return Response.ok().entity(res).build();
+		} catch (IOException e) {
+			e.printStackTrace();
+			JSONObject json = null;
+			json.put("text", "An error has occurred.");
+			return Response.ok().entity(json.toString()).build();
+		}
 	}
 }
