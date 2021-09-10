@@ -85,7 +85,7 @@ public class CitrecHandlerService extends RESTService {
 			e.printStackTrace();
 		}
 		payloadJson.put("context", bodyJson.getAsString("rec"));
-		payloadJson.put("user", bodyJson.getAsString("user"));
+		payloadJson.put("channel", bodyJson.getAsString("channel"));
 		// get recommendation result from python
 		try {
 			String line = null;
@@ -139,7 +139,6 @@ public class CitrecHandlerService extends RESTService {
 			bodyJson.remove("botName");
 			bodyJson.remove("contextOn");
 			bodyJson.remove("email");
-			bodyJson.remove("channel");
 			// Extract useful information from the input string
 			if(bodyJson.getAsString("msg").startsWith("[{")){
 				JSONArray jsonArray = (JSONArray) p.parse(bodyJson.getAsString("msg"));
@@ -210,7 +209,6 @@ public class CitrecHandlerService extends RESTService {
 			bodyJson.remove("contextOn");
 			bodyJson.remove("email");
 			bodyJson.remove("list");
-			bodyJson.remove("channel");
 			bodyJson.remove("time");
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -269,7 +267,7 @@ public class CitrecHandlerService extends RESTService {
 			e.printStackTrace();
 		}
 		payloadJson.put("keywords", bodyJson.getAsString("kw"));
-		payloadJson.put("user", bodyJson.getAsString("user"));
+		payloadJson.put("channel", bodyJson.getAsString("channel"));
 		// get search results from python
 		try {
 			String line = null;
