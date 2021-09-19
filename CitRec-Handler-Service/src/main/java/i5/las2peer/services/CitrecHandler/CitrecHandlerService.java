@@ -47,17 +47,17 @@ import net.minidev.json.parser.ParseException;
 @Api
 @SwaggerDefinition(
 		info = @Info(
-				title = "las2peer Template Service",
+				title = "las2peer CitRec Handler Service",
 				version = "1.0.0",
-				description = "A las2peer Template Service for demonstration purposes.",
-				termsOfService = "http://your-terms-of-service-url.com",
+				description = "A las2peer Service that handler the messages comes from citbot.",
+				termsOfService = "",
 				contact = @Contact(
-						name = "John Doe",
+						name = "Chenyang Li",
 						url = "provider.com",
-						email = "john.doe@provider.com"),
+						email = "chenyang.li@rwth-aachen.de"),
 				license = @License(
-						name = "your software license name",
-						url = "http://your-software-license-url.com")))
+						name = "",
+						url = "")))
 @ServicePath("/CitrecHandler")
 public class CitrecHandlerService extends RESTService {
 
