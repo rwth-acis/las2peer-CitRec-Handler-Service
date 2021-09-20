@@ -230,6 +230,21 @@ task cleanAll {
     }
 }
 
+task PostBuildTask(type: Exec){
+    workingDir "$projectDir/bin"
+    commandLine 'cmd', '/c', 'start_network.bat'
+
+
+}
+task cleanBuild() {
+        def tasks = [clean, build]
+        for (int i = 0; i < tasks.size() - 1; i++) {
+            tasks[i + 1].mustRunAfter(tasks[i])
+        }
+        dependsOn(tasks)
+
+}
+
 jacoco {
     toolVersion = "0.8.6"
     reportsDirectory = file("$projectDir/export/jacoco")
