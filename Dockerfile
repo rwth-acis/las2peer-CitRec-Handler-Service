@@ -1,13 +1,8 @@
 FROM openjdk:14-jdk-alpine
 
 ENV LAS2PEER_PORT=9012
-ENV DATABASE_NAME=CHS
-ENV DATABASE_HOST=host.docker.internal 
-ENV DATABASE_PORT=3306
-ENV DATABASE_USER=root
-ENV DATABASE_PASSWORD=root
 
-RUN apk add --update bash mysql-client apache-ant tzdata curl && rm -f /var/cache/apk/*
+RUN apk add --update bash apache-ant tzdata curl && rm -f /var/cache/apk/*
 
 ENV TZ=Europe/Berlin
 
