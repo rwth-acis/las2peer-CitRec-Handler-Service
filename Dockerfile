@@ -5,7 +5,7 @@ ENV DATABASE_NAME=CHS
 ENV DATABASE_HOST=host.docker.internal 
 ENV DATABASE_PORT=3306
 ENV DATABASE_USER=root
-ENV DATABASE_PASSWORD=password
+ENV DATABASE_PASSWORD=root
 
 RUN apk add --update bash mysql-client apache-ant tzdata curl && rm -f /var/cache/apk/*
 
