@@ -24,6 +24,14 @@ gradle clean build
 
 ## Start
 
+This service needs bootstrap to the [las2peer-social-bot-manager-service](https://github.com/rwth-acis/las2peer-social-bot-manager-service).
+
+For bootstrapping, after starting the las2peer-social-bot-manager-service, please execute command `getLocalNodeInfo` command in the terminal of the las2peer-social-bot-manager-service, then you will found an IP address with a port. Copy it and add following parameter in the start_network.bat or start_network.sh script in the line beginning with `java -cp`:
+
+```bash
+-b <ip:port>
+```
+
 To start this service, use one of the available start scripts:
 
 Windows:
@@ -37,3 +45,4 @@ Unix/Mac:
 ```
 bin/start_network.sh
 ```
+
