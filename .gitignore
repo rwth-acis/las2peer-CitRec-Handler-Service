@@ -28,3 +28,5 @@ archiva_credentials.xml
 # Ignore Gradle build output directory
 build
 .vscode/settings.json
+CitRec-Handler-Service/bin
+CitRec-Handler-Service/export
