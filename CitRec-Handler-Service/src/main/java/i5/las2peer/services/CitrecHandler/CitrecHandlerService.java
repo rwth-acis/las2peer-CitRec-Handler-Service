@@ -32,6 +32,9 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
+import i5.las2peer.api.Context; 
+import i5.las2peer.api.logging.MonitoringEvent;
+
 // TODO Describe your own service
 /**
  * las2peer-Template-Service
@@ -79,6 +82,8 @@ public class CitrecHandlerService extends RESTService {
 		JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
 		JSONObject bodyJson = null;
 		JSONObject payloadJson = new JSONObject();
+		JSONObject monitorEvent51 = new JSONObject();
+		final long start = System.currentTimeMillis();
 		try {
 			bodyJson = (JSONObject) p.parse(body);
 		} catch (ParseException e) {
@@ -105,10 +110,16 @@ public class CitrecHandlerService extends RESTService {
 				sb.append(line);
 			}
 			res = sb.toString();
+			monitorEvent51.put("Task", "Recommendation Search");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
 			return Response.ok().entity(res).build();
 		} catch (IOException e) {
 			e.printStackTrace();
 			bodyJson.put("text", "An error has occurred.");
+			monitorEvent51.put("Task", "Recommendation Search Error");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
 			return Response.ok().entity(bodyJson.toString()).build();
 		}
 	}
@@ -200,6 +211,8 @@ public class CitrecHandlerService extends RESTService {
 	public Response lists(String body) {
 		JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
 		JSONObject bodyJson = null;
+		JSONObject monitorEvent52 = new JSONObject();
+        final long start = System.currentTimeMillis();
 		try {
 			bodyJson = (JSONObject) p.parse(body);
 			// Delete useless key-values
@@ -214,6 +227,9 @@ public class CitrecHandlerService extends RESTService {
 			e.printStackTrace();
 			JSONObject json = null;
 			json.put("text", "An error has occurred.");
+			monitorEvent52.put("Task", "Returns list Error");
+			monitorEvent52.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_52,monitorEvent52.toString());
 			return Response.ok().entity(json.toString()).build();
 		}
 		try {
@@ -234,11 +250,17 @@ public class CitrecHandlerService extends RESTService {
 				sb.append(line);
 			}
 			res = sb.toString();
+			monitorEvent52.put("Task", "Returns list");
+			monitorEvent52.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_52,monitorEvent52.toString());
 			return Response.ok().entity(res).build();
 		} catch (IOException e) {
 			e.printStackTrace();
 			JSONObject json = null;
 			json.put("text", "An error has occurred.");
+			monitorEvent52.put("Task", "Returns list Error");
+			monitorEvent52.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_52,monitorEvent52.toString());
 			return Response.ok().entity(json.toString()).build();
 		}
 	}
@@ -261,6 +283,8 @@ public class CitrecHandlerService extends RESTService {
 		JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
 		JSONObject bodyJson = null;
 		JSONObject payloadJson = new JSONObject();
+		JSONObject monitorEvent51 = new JSONObject();
+		final long start = System.currentTimeMillis();
 		try {
 			bodyJson = (JSONObject) p.parse(body);
 		} catch (ParseException e) {
@@ -287,10 +311,16 @@ public class CitrecHandlerService extends RESTService {
 				sb.append(line);
 			}
 			res = sb.toString();
+			monitorEvent51.put("Task", "Keyword Search");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
 			return Response.ok().entity(res).build();
 		} catch (IOException e) {
 			e.printStackTrace();
 			bodyJson.put("text", "An error has occurred.");
+			monitorEvent51.put("Task", "Keyword Search Error");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
 			return Response.ok().entity(bodyJson.toString()).build();
 		}
 	}
@@ -310,6 +340,9 @@ public class CitrecHandlerService extends RESTService {
 					code = HttpURLConnection.HTTP_OK,
 					message = "REPLACE THIS WITH YOUR OK MESSAGE")})
 	public Response greeting() {
+		JSONObject monitorEvent50 = new JSONObject();
+		final long start = System.currentTimeMillis();
+		monitorEvent50.put("Task", "Greeting");
 		try {
 			String line = null;
 			StringBuilder sb = new StringBuilder();
@@ -325,11 +358,15 @@ public class CitrecHandlerService extends RESTService {
 				sb.append(line);
 			}
 			res = sb.toString();
+			monitorEvent50.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_50,monitorEvent50.toString());
 			return Response.ok().entity(res).build();
 		} catch (IOException e) {
 			e.printStackTrace();
 			JSONObject json = null;
 			json.put("text", "An error has occurred.");
+			monitorEvent50.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_50,monitorEvent50.toString());
 			return Response.ok().entity(json.toString()).build();
 		}
 	}
