@@ -11,7 +11,7 @@ This service is a part of Citation Recommendation Bot. **Please look at  [Citati
 
 ## Java
 
-las2peer uses **Java 14**.
+las2peer uses **Java 17**.
 
 
 ## Build
