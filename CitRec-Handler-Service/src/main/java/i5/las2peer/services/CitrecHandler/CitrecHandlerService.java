@@ -420,6 +420,9 @@ public class CitrecHandlerService extends RESTService {
 						res += t +"\n";
 					}
 				}
+				resj = new JSONObject();
+				resj.put("text", res);
+				res = resj.toJSONString();
 			}
 			} catch (ParseException e) {
 				e.printStackTrace();
