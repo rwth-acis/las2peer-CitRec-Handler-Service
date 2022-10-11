@@ -370,4 +370,71 @@ public class CitrecHandlerService extends RESTService {
 			return Response.ok().entity(json.toString()).build();
 		}
 	}
+
+	/**
+	 * Function for greeting message
+	 *
+	 */
+	@POST
+	@Path("/greetingRC")
+	@Produces(MediaType.TEXT_PLAIN)
+	@ApiOperation(
+			value = "REPLACE THIS WITH AN APPROPRIATE FUNCTION NAME",
+			notes = "REPLACE THIS WITH YOUR NOTES TO THE FUNCTION")
+	@ApiResponses(
+			value = {@ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE")})
+	public Response greetingRC() {
+		JSONObject monitorEvent50 = new JSONObject();
+		final long start = System.currentTimeMillis();
+		monitorEvent50.put("Task", "Greeting");
+		try {
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			String res = null;
+
+			URL url = UriBuilder.fromPath("http://localhost:5000/greeting").build().toURL();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.connect();
+			BufferedReader rd  = new BufferedReader( new InputStreamReader(connection.getInputStream(), "UTF-8"));
+
+			while ((line = rd.readLine()) != null ) {
+				sb.append(line);
+			}
+			res = sb.toString();
+			JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
+			JSONObject resj = null;
+			try {
+				resj =(JSONObject) p.parse(res);
+				if(resj.get("blocks")!=null){
+				res = "";
+				JSONArray blocks = (JSONArray) resj.get("blocks");
+				for (int i = 0, size = blocks.size(); i < size; i++)
+    			{
+					JSONObject section = (JSONObject) blocks.get(i);
+					if(section.getAsString("type").equals("section")){
+						JSONObject sectionTextObject = (JSONObject) section.get("text");
+						String t = sectionTextObject.getAsString("text");
+						res += t +"\n";
+					}
+				}
+			}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			monitorEvent50.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_50,monitorEvent50.toString());
+			return Response.ok().entity(res).build();
+		} catch (IOException e) {
+			e.printStackTrace();
+			JSONObject json = null;
+			json.put("text", "An error has occurred.");
+			monitorEvent50.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_50,monitorEvent50.toString());
+			return Response.ok().entity(json.toString()).build();
+		}
+	}
 }
