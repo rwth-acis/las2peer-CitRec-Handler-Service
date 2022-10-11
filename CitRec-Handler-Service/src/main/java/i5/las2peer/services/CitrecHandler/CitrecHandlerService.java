@@ -175,7 +175,13 @@ public class CitrecHandlerService extends RESTService {
 				resj =(JSONObject) p.parse(res);
 				if(resj.get("blocks")!=null){
 				res = "";
-				JSONArray blocks = (JSONArray) resj.get("blocks");
+				JSONArray blocks = null;
+				if (resj.get("blocks") instanceof JSONArray){
+					blocks = (JSONArray) resj.get("blocks");
+				else if (resj.get("blocks") instanceof String){
+					String blocksString = (String) resj.get("blocks");
+					blocks = (JSONArray) p.parse(blocksString);
+				}
 				for (int i = 0, size = blocks.size(); i < size; i++)
     			{
 					JSONObject section = (JSONObject) blocks.get(i);
@@ -458,7 +464,13 @@ public class CitrecHandlerService extends RESTService {
 				resj =(JSONObject) p.parse(res);
 				if(resj.get("blocks")!=null){
 				res = "";
-				JSONArray blocks = (JSONArray) resj.get("blocks");
+				JSONArray blocks = null;
+				if (resj.get("blocks") instanceof JSONArray){
+					blocks = (JSONArray) resj.get("blocks");
+				else if (resj.get("blocks") instanceof String){
+					String blocksString = (String) resj.get("blocks");
+					blocks = (JSONArray) p.parse(blocksString);
+				}
 				for (int i = 0, size = blocks.size(); i < size; i++)
     			{
 					JSONObject section = (JSONObject) blocks.get(i);
