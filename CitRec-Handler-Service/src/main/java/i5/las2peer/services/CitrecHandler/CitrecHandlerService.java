@@ -178,7 +178,7 @@ public class CitrecHandlerService extends RESTService {
 				JSONArray blocks = null;
 				if (resj.get("blocks") instanceof JSONArray){
 					blocks = (JSONArray) resj.get("blocks");
-				else if (resj.get("blocks") instanceof String){
+				}else if (resj.get("blocks") instanceof String){
 					String blocksString = (String) resj.get("blocks");
 					blocks = (JSONArray) p.parse(blocksString);
 				}
@@ -467,7 +467,7 @@ public class CitrecHandlerService extends RESTService {
 				JSONArray blocks = null;
 				if (resj.get("blocks") instanceof JSONArray){
 					blocks = (JSONArray) resj.get("blocks");
-				else if (resj.get("blocks") instanceof String){
+				}else if (resj.get("blocks") instanceof String){
 					String blocksString = (String) resj.get("blocks");
 					blocks = (JSONArray) p.parse(blocksString);
 				}
