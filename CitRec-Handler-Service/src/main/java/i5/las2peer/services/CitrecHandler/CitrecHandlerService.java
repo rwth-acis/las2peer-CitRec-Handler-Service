@@ -124,6 +124,88 @@ public class CitrecHandlerService extends RESTService {
 		}
 	}
 
+	/**
+	 * Function for citation recommendation
+	 *
+	 */
+	@POST
+	@Path("/recRC")
+	@Produces(MediaType.TEXT_PLAIN)
+	@ApiOperation(
+			value = "REPLACE THIS WITH AN APPROPRIATE FUNCTION NAME",
+			notes = "REPLACE THIS WITH YOUR NOTES TO THE FUNCTION")
+	@ApiResponses(
+			value = {@ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE")})
+	public Response recRC(String body) {
+		JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
+		JSONObject bodyJson = null;
+		JSONObject payloadJson = new JSONObject();
+		JSONObject monitorEvent51 = new JSONObject();
+		final long start = System.currentTimeMillis();
+		try {
+			bodyJson = (JSONObject) p.parse(body);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		payloadJson.put("context", bodyJson.getAsString("rec"));
+		payloadJson.put("channel", bodyJson.getAsString("channel"));
+		// get recommendation result from python
+		try {
+			String line = null;
+			StringBuilder sb = new StringBuilder ();
+			String res = null;
+
+			URL url = UriBuilder.fromPath("http://localhost:5000/rec")
+						.path(URLEncoder.encode(payloadJson.toString(), "UTF-8").replace("+","%20"))
+						.build()
+						.toURL();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.connect();
+			BufferedReader rd  = new BufferedReader( new InputStreamReader(connection.getInputStream(), "UTF-8"));
+
+			while ((line = rd.readLine()) != null ) {
+				sb.append(line);
+			}
+			res = sb.toString();
+			JSONObject resj = null;
+			try {
+				resj =(JSONObject) p.parse(res);
+				if(resj.get("blocks")!=null){
+				res = "";
+				JSONArray blocks = (JSONArray) resj.get("blocks");
+				for (int i = 0, size = blocks.size(); i < size; i++)
+    			{
+					JSONObject section = (JSONObject) blocks.get(i);
+					if(section.getAsString("type").equals("section")){
+						JSONObject sectionTextObject = (JSONObject) section.get("text");
+						String t = sectionTextObject.getAsString("text");
+						res += t +"\n";
+					}
+				}
+				resj = new JSONObject();
+				resj.put("text", res);
+				res = resj.toJSONString();
+			}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			monitorEvent51.put("Task", "Recommendation Search");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
+			return Response.ok().entity(res).build();
+		} catch (IOException e) {
+			e.printStackTrace();
+			bodyJson.put("text", "An error has occurred.");
+			monitorEvent51.put("Task", "Recommendation Search Error");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
+			return Response.ok().entity(bodyJson.toString()).build();
+		}
+	}
+
 
 	/**
 	 * Function for actions
@@ -311,6 +393,88 @@ public class CitrecHandlerService extends RESTService {
 				sb.append(line);
 			}
 			res = sb.toString();
+			monitorEvent51.put("Task", "Keyword Search");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
+			return Response.ok().entity(res).build();
+		} catch (IOException e) {
+			e.printStackTrace();
+			bodyJson.put("text", "An error has occurred.");
+			monitorEvent51.put("Task", "Keyword Search Error");
+			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
+            Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
+			return Response.ok().entity(bodyJson.toString()).build();
+		}
+	}
+
+	/**
+	 * Function for keywords searching
+	 *
+	 */
+	@POST
+	@Path("/keywordsRC")
+	@Produces(MediaType.TEXT_PLAIN)
+	@ApiOperation(
+			value = "REPLACE THIS WITH AN APPROPRIATE FUNCTION NAME",
+			notes = "REPLACE THIS WITH YOUR NOTES TO THE FUNCTION")
+	@ApiResponses(
+			value = {@ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE")})
+	public Response keywordsRC(String body) {
+		JSONParser p = new JSONParser(JSONParser.MODE_PERMISSIVE);
+		JSONObject bodyJson = null;
+		JSONObject payloadJson = new JSONObject();
+		JSONObject monitorEvent51 = new JSONObject();
+		final long start = System.currentTimeMillis();
+		try {
+			bodyJson = (JSONObject) p.parse(body);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		payloadJson.put("keywords", bodyJson.getAsString("kw"));
+		payloadJson.put("channel", bodyJson.getAsString("channel"));
+		// get search results from python
+		try {
+			String line = null;
+			StringBuilder sb = new StringBuilder ();
+			String res = null;
+
+			URL url = UriBuilder.fromPath("http://localhost:5000/keywords")
+					.path(URLEncoder.encode(payloadJson.toString(), "UTF-8").replace("+","%20"))
+					.build()
+					.toURL();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.connect();
+			BufferedReader rd  = new BufferedReader( new InputStreamReader(connection.getInputStream(), "UTF-8"));
+
+			while ((line = rd.readLine()) != null ) {
+				sb.append(line);
+			}
+			res = sb.toString();
+			JSONObject resj = null;
+			try {
+				resj =(JSONObject) p.parse(res);
+				if(resj.get("blocks")!=null){
+				res = "";
+				JSONArray blocks = (JSONArray) resj.get("blocks");
+				for (int i = 0, size = blocks.size(); i < size; i++)
+    			{
+					JSONObject section = (JSONObject) blocks.get(i);
+					if(section.getAsString("type").equals("section")){
+						JSONObject sectionTextObject = (JSONObject) section.get("text");
+						String t = sectionTextObject.getAsString("text");
+						res += t +"\n";
+					}
+				}
+				resj = new JSONObject();
+				resj.put("text", res);
+				res = resj.toJSONString();
+			}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			monitorEvent51.put("Task", "Keyword Search");
 			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
             Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
