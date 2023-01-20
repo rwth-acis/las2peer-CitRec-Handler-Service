@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +35,8 @@ import net.minidev.json.parser.ParseException;
 
 import i5.las2peer.api.Context; 
 import i5.las2peer.api.logging.MonitoringEvent;
+import i5.las2peer.connectors.webConnector.client.ClientResponse;
+import i5.las2peer.connectors.webConnector.client.MiniClient;
 
 // TODO Describe your own service
 /**
@@ -201,6 +204,7 @@ public class CitrecHandlerService extends RESTService {
 			monitorEvent51.put("Task", "Recommendation Search");
 			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
             Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
+			
 			return Response.ok().entity(res).build();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -211,6 +215,8 @@ public class CitrecHandlerService extends RESTService {
 			return Response.ok().entity(bodyJson.toString()).build();
 		}
 	}
+
+
 
 
 	/**
@@ -413,6 +419,7 @@ public class CitrecHandlerService extends RESTService {
 		}
 	}
 
+
 	/**
 	 * Function for keywords searching
 	 *
@@ -440,6 +447,8 @@ public class CitrecHandlerService extends RESTService {
 		}
 		payloadJson.put("keywords", bodyJson.getAsString("kw"));
 		payloadJson.put("channel", bodyJson.getAsString("channel"));
+		String botName = bodyJson.getAsString("botName");
+		String sbfURL = bodyJson.getAsString("sbfURL");
 		// get search results from python
 		try {
 			String line = null;
@@ -481,7 +490,8 @@ public class CitrecHandlerService extends RESTService {
 					}
 				}
 				resj = new JSONObject();
-				resj.put("text", res);
+				botWebhook(res, bodyJson.getAsString("channel"), sbfURL + "/" + botName);
+				resj.put("text", "");
 				res = resj.toJSONString();
 			}
 			} catch (ParseException e) {
@@ -498,6 +508,30 @@ public class CitrecHandlerService extends RESTService {
 			monitorEvent51.put("Process time", System.currentTimeMillis() - start);
             Context.get().monitorEvent(MonitoringEvent.SERVICE_CUSTOM_MESSAGE_51,monitorEvent51.toString());
 			return Response.ok().entity(bodyJson.toString()).build();
+		}
+	}
+
+
+	
+	private void botWebhook(String message, String channel, String botURL){
+		MiniClient client = new MiniClient();
+		client.setConnectorEndpoint(botURL);
+		JSONObject information = new JSONObject();
+		information.put("message", message);
+		information.put("channel", channel);
+		information.put("event", "chat_message");
+		try {
+			ClientResponse result = client.sendRequest("POST", "",
+					information.toJSONString(), MediaType.TEXT_PLAIN, "", new HashMap<>());
+			System.out.println(result.toString());
+			System.out.println(result.getHttpCode());
+			System.out.println(result.getRawResponse());
+			System.out.println(result.getResponse());
+			// JSONObject answer = (JSONObject) parser.parse(result.getResponse());
+			// System.out.println(answer);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("pepe");
 		}
 	}
 
