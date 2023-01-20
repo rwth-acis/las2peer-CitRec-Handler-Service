@@ -522,7 +522,7 @@ public class CitrecHandlerService extends RESTService {
 		information.put("event", "chat_message");
 		try {
 			ClientResponse result = client.sendRequest("POST", "",
-					information.toJSONString(), MediaType.TEXT_PLAIN, "", new HashMap<>());
+					information.toJSONString());
 			System.out.println(result.toString());
 			System.out.println(result.getHttpCode());
 			System.out.println(result.getRawResponse());
